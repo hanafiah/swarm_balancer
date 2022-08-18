@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  web:
+    image: nginx:latest   
+    deploy:
+      mode: replicated
+      replicas: 2
+    volumes:
+      - ./web/conf.d:/etc/nginx/conf.d
+      - ./web/html:/usr/share/nginx/html
+  loadbalancer:
+    image: nginx:latest
+    volumes:
+      - ./lb/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web
+    ports:
+      - target: 80
+        published: 9090
+        mode: host
+volumes:
+  db_data:
+
+# run swarm
+# docker stack deploy -c docker-compose.yml myswarm
+# localhost:9090
